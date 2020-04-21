@@ -7,7 +7,7 @@ import { BooksModule } from './books/books.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb+srv://user:3Tolian2@cluster0-to3ov.mongodb.net/onix-nest', {
+    MongooseModule.forRoot(`mongodb+srv://user:3Tolian2@cluster0-to3ov.mongodb.net/onix-nest`, {
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,

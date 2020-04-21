@@ -5,5 +5,5 @@ export class PublishDto {
     readonly publisher: string;
 
     @IsNumber()
-    year: number;
+    readonly year: number;
 }

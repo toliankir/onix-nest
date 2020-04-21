@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, HttpStatus } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/createBook.dto';
 import { IBook } from './interfaces/book.interface';
@@ -12,26 +12,61 @@ export class BooksController {
 
     @Get()
     async showAllBook(): Promise<IBook[]> {
-        return await this.bookService.getAll();
+        try {
+            return await this.bookService.getAll();
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.message,
+            }, HttpStatus.INTERNAL_SERVER_ERROR)
+        }        
     }
     
     @Get(':id')
     async showById(@Param() bookIdDto: BookIdDto): Promise<IBook> {
-        return await this.bookService.getById(bookIdDto.id);
+        try {
+            return await this.bookService.getById(bookIdDto.id);
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.message,
+            }, HttpStatus.INTERNAL_SERVER_ERROR)
+        }        
     }
 
     @Delete(':id')
     async deleteById(@Param() bookIdDto: BookIdDto): Promise<IMongoDeleteResponse> {
-        return await this.bookService.deleteById(bookIdDto.id);
+        try {
+            return await this.bookService.deleteById(bookIdDto.id);
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.message,
+            }, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
     @Put()
     async updateById(@Body() updatedBook: CreateBookDto, @Body() bookId: BookIdDto) {
-        return await this.bookService.updateById(bookId.id, updatedBook);
+        try {
+            return await this.bookService.updateById(bookId.id, updatedBook);
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.message,
+            }, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
     @Post() 
     async createBook(@Body() createBookDto: CreateBookDto): Promise<IBook> {
-        return await this.bookService.create(createBookDto);
+        try {
+            return await this.bookService.create(createBookDto);
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: error.message,
+            }, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 }

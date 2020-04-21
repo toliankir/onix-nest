@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsObject, IsOptional, IsNumberString, IsInstance } from 'class-validator';
+import { IsNumber, IsString, IsObject } from 'class-validator';
 import { PublishDto } from './publish.dto';
 
 export class CreateBookDto {
