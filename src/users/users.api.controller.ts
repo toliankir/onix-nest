@@ -4,15 +4,16 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UserIdDto } from './dto/userId.dto';
 import { IUser } from './interfaces/user.interface';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { Users } from './entities/user.entity';
 
 @Controller('api/users')
 export class UsersApiController {
     constructor(private userService: UsersService) {}
 
     @Post()
-    async create(@Body() createUserDto: CreateUserDto) {
+    async create(@Body() createUser: Users) {
         try {
-            return await this.userService.create(createUserDto);
+            return await this.userService.create(createUser);
         } catch (error) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -22,7 +23,7 @@ export class UsersApiController {
     }
 
     @Get(':id')
-    async showById(@Param() params: UserIdDto): Promise<IUser> {
+    async showById(@Param() params: UserIdDto): Promise<Users> {
         try {
             return await this.userService.getById(params.id);
         } catch (error) {
@@ -46,7 +47,7 @@ export class UsersApiController {
     }
 
     @Put()
-    async updateUserById(@Body() updateUserDto: UpdateUserDto,
+    async updateUserById(@Body() updateUserDto: Users,
         @Body() userId: UserIdDto) {
             try {
                return await this.userService.updateById(userId.id, updateUserDto);

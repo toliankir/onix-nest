@@ -5,28 +5,43 @@ import { IUser } from './interfaces/user.interface';
 import { CreateUserDto } from './dto/createUser.dto';
 import { IMongoDeleteResponse } from './interfaces/mongoDeleteResp.interface'
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository, DeleteWriteOpResultObject, UpdateWriteOpResult } from 'typeorm';
+import { Users } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel('User') private userModel: Model<IUser>) {}
+    constructor(
+        @InjectModel('User') private userModel: Model<IUser>,
+        @InjectRepository(Users) private readonly userRepositiry: MongoRepository<Users>) {}
 
-    create(createUserDto: CreateUserDto):Promise<IUser> {
-        return (new this.userModel(createUserDto)).save();
+    create(createUser: Users):Promise<Users> {
+        return this.userRepositiry.save(createUser);
+        // return (new this.userModel(createUserDto)).save();
     }
 
-    getAll(): Promise<IUser[]> {
-        return this.userModel.find({}, { '__v': 0 }).exec();
+    getAll(): Promise<Users[]> {
+        return this.userRepositiry.find({});
+        // return this.userModel.find({}, { '__v': 0 }).exec();
     }
 
-    getById(id: string): Promise<IUser> {
-        return this.userModel.findById(id, { '__v': 0 }).exec();
+    getById(_id: string): Promise<Users> {
+        return this.userRepositiry.findOne( _id );
     }
 
-    deleteById(_id: string): Promise<IMongoDeleteResponse> {
-        return this.userModel.deleteOne({ _id }).exec();
+    async deleteById(_id: string): Promise<DeleteWriteOpResultObject> {
+        return this.userRepositiry.deleteOne(await this.getById(_id));
+        // return this.userModel.deleteOne({ _id }).exec();
     }
 
-    updateById(_id: string, updatedUser: UpdateUserDto): Promise<IMongoDeleteResponse> {
-        return this.userModel.updateOne({ _id }, updatedUser).exec();
+    async updateById(_id: string, updatedUser: Users): Promise<UpdateWriteOpResult> {
+        // delete updatedUser._id;
+        const obj = await this.getById(_id);
+        console.log(obj);
+        // obj.firstName = 'aaa bbb test';
+        // obj = updatedUser;
+        // obj.save();
+        return this.userRepositiry.updateOne( obj , { $set: updatedUser});
+        // return this.userModel.updateOne({ _id }, {}).exec();
     }
 }
