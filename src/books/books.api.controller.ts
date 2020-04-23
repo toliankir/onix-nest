@@ -1,9 +1,9 @@
 import { Controller, Get, Param, HttpException, HttpStatus, Delete, Put, Body, Post } from '@nestjs/common';
 import { BookIdDto } from './dto/bookId.dto';
 import { IBook } from './interfaces/book.interface';
-import { IMongoDeleteResponse } from 'src/users/interfaces/mongoDeleteResp.interface';
-import { CreateBookDto } from './dto/createBook.dto';
+import { CreateUpdateBookDto } from './dto/createUpdateBook.dto';
 import { BooksService } from './books.service';
+import { Book } from './entities/book.entity';
 
 @Controller('api/books')
 export class BooksApiController {
@@ -22,7 +22,7 @@ export class BooksApiController {
     }
 
     @Delete(':id')
-    async deleteById(@Param() bookIdDto: BookIdDto): Promise<IMongoDeleteResponse> {
+    async deleteById(@Param() bookIdDto: BookIdDto): Promise<any> {
         try {
             return await this.bookService.deleteById(bookIdDto.id);
         } catch (error) {
@@ -34,7 +34,7 @@ export class BooksApiController {
     }
 
     @Put()
-    async updateById(@Body() updatedBook: CreateBookDto, @Body() bookId: BookIdDto) {
+    async updateById(@Body() updatedBook: CreateUpdateBookDto, @Body() bookId: BookIdDto) {
         try {
             return await this.bookService.updateById(bookId.id, updatedBook);
         } catch (error) {
@@ -46,9 +46,9 @@ export class BooksApiController {
     }
 
     @Post() 
-    async createBook(@Body() createBookDto: CreateBookDto): Promise<IBook> {
+    async createBook(@Body() createBookDto: CreateUpdateBookDto): Promise<Book> {
         try {
-            return await this.bookService.create(createBookDto);
+            return await this.bookService.create(createBookDto.toEntity());
         } catch (error) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,

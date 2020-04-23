@@ -1,14 +1,13 @@
 import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { IUser } from './interfaces/user.interface';
-import { Users } from './entities/user.entity';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
     constructor(private userService: UsersService) {}
 
     @Get()
-    async showAll(): Promise<Users[]> {
+    async showAll(): Promise<User[]> {
         try {
             return await this.userService.getAll();
         } catch (error) {

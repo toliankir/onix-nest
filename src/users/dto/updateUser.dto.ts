@@ -1,5 +1,6 @@
 import { IsString, IsEmail, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { User } from '../entities/user.entity';
 
 export class UpdateUserDto {
     @IsString()
@@ -21,4 +22,12 @@ export class UpdateUserDto {
     @IsOptional()
     @Transform((val: string) => val === 'true')
     verified: boolean;
+
+    toEntity(): User {
+        const newUser: User = new User();
+        Object.keys(this).forEach(key => {
+            newUser[key] = this[key];
+        });
+        return newUser;
+    }
 }

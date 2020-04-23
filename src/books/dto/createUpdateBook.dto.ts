@@ -1,7 +1,8 @@
 import { IsNumber, IsString, IsObject } from 'class-validator';
 import { PublishDto } from './publish.dto';
+import { Book } from '../entities/book.entity';
 
-export class CreateBookDto {
+export class CreateUpdateBookDto {
     @IsNumber()
     readonly blogpost: number;
 
@@ -13,4 +14,12 @@ export class CreateBookDto {
 
     @IsObject()
     published: PublishDto;
+        
+    toEntity(): Book {
+        const newBook: Book = new Book();
+        Object.keys(this).forEach(key => {
+            newBook[key] = this[key];
+        });
+        return newBook;
+    }
 }
