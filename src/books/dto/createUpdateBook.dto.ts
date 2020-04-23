@@ -1,6 +1,7 @@
-import { IsNumber, IsString, IsObject } from 'class-validator';
+import { IsNumber, IsString, IsObject, ValidateNested } from 'class-validator';
 import { PublishDto } from './publish.dto';
 import { Book } from '../entities/book.entity';
+import { Type } from 'class-transformer';
 
 export class CreateUpdateBookDto {
     @IsNumber()
@@ -12,7 +13,9 @@ export class CreateUpdateBookDto {
     @IsString()
     readonly author: string;
 
-    @IsObject()
+    // @IsObject()
+    @ValidateNested()
+    @Type(() => PublishDto)
     published: PublishDto;
         
     toEntity(): Book {
