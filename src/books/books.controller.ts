@@ -1,13 +1,13 @@
 import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
 import { BooksService } from './books.service';
-import { IBook } from './interfaces/book.interface';
+import { Book } from './entities/book.entity';
 
 @Controller('books')
 export class BooksController {
     constructor(private bookService: BooksService) {}
 
     @Get()
-    async showAllBook(): Promise<IBook[]> {
+    async showAllBook(): Promise<Book[]> {
         try {
             return await this.bookService.getAll();
         } catch (error) {

@@ -1,35 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { IBook } from './interfaces/book.interface';
 import { CreateUpdateBookDto } from './dto/createUpdateBook.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MongoRepository } from 'typeorm';
+import { MongoRepository, DeleteWriteOpResultObject, UpdateWriteOpResult } from 'typeorm';
 import { Book } from './entities/book.entity';
 
 @Injectable()
 export class BooksService {
-    constructor(@InjectModel('Book') private bookModel: Model<IBook>,
-    @InjectRepository(Book) private readonly userRepositiry: MongoRepository<Book>) {}
+    constructor(@InjectRepository(Book) private readonly bookRepositiry: MongoRepository<Book>) {}
 
-    getAll(): Promise<IBook[]> {
-        return this.bookModel.find({}, { '__v': 0 }).exec();
+    getAll(): Promise<Book[]> {
+        return this.bookRepositiry.find({});
     }
 
-    getById(_id: string): Promise<IBook> {
-        return this.bookModel.findOne({ _id }, { '__v': 0}).exec();
+    getById(id: string): Promise<Book> {
+        return this.bookRepositiry.findOne(id);
     }
 
     create(createBook: Book): Promise<Book> {
-        return this.userRepositiry.save(createBook);
+        return this.bookRepositiry.save(createBook);
     }
 
-    deleteById(_id: string): Promise<any> {
-        return this.bookModel.deleteOne({ _id }).exec();
+    async deleteById(id: string): Promise<DeleteWriteOpResultObject> {
+        return this.bookRepositiry.deleteOne(await this.getById(id));
     }
     
-    updateById(_id: string, updatedBook: CreateUpdateBookDto): Promise<any> {
-        return this.bookModel.updateOne({ _id }, updatedBook).exec();
+    async updateById(id: string, updatedBook: CreateUpdateBookDto): Promise<UpdateWriteOpResult> {
+        return this.bookRepositiry.updateOne(await this.getById(id) , { $set: updatedBook});
     }
-
 }

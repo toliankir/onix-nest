@@ -1,6 +1,5 @@
 import { Controller, Get, Param, HttpException, HttpStatus, Delete, Put, Body, Post } from '@nestjs/common';
 import { BookIdDto } from './dto/bookId.dto';
-import { IBook } from './interfaces/book.interface';
 import { CreateUpdateBookDto } from './dto/createUpdateBook.dto';
 import { BooksService } from './books.service';
 import { Book } from './entities/book.entity';
@@ -10,7 +9,7 @@ export class BooksApiController {
     constructor(private bookService: BooksService) {}
     
     @Get(':id')
-    async showById(@Param() bookIdDto: BookIdDto): Promise<IBook> {
+    async showById(@Param() bookIdDto: BookIdDto): Promise<Book> {
         try {
             return await this.bookService.getById(bookIdDto.id);
         } catch (error) {

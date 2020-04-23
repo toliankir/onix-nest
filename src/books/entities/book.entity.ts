@@ -1,7 +1,7 @@
 import { Entity,  ObjectIdColumn, Column } from 'typeorm';
 import { Publish } from './publish.entity';
 
-@Entity('books2')
+@Entity('books')
 export class Book {
     @ObjectIdColumn()
     _id: string;
